@@ -19,3 +19,8 @@ export interface InititalState{
     token : string | null, 
     status : Status
 }
+
+export interface LoginUserData{
+    email : string, 
+    password : string
+}

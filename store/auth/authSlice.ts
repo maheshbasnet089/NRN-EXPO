@@ -1,9 +1,10 @@
 
 
 import {createSlice,PayloadAction} from '@reduxjs/toolkit'
-import { InititalState, Role, UserData } from './type'
+import { InititalState, LoginUserData, Role, UserData } from './type'
 import { Status } from '../type.global'
-import axios from 'axios'
+import api from '@/http'
+
 
 
 const initialState:InititalState = {
@@ -18,22 +19,46 @@ const authSlice = createSlice({
     reducers : {
         setUser(state:InititalState,action:PayloadAction<UserData>){
             state.userData = action.payload
+        }, 
+        setStatus(state:InititalState,action:PayloadAction<Status>){
+            state.status = action.payload
         }
     }
 })
 
-export const {setUser} = authSlice.actions
+export const {setUser,setStatus} = authSlice.actions
 export default authSlice.reducer
 
 function registerUser(data:UserData){
-    return async function registerUserThunk(dispatch){
+    return async function registerUserThunk(dispatch:any){
         try {
-            const response = await axios.post("")
+            const response = await api.post("/register",data)
             if(response.status === 200){
                 setUser(response.data.data)
+                setStatus(Status.Success)
+            }else{
+                setStatus(Status.Error)
             }
         } catch (error) {
-            
+            console.log(error)
+            setStatus(Status.Error)
+        }
+    }
+}
+
+function loginUser(data:LoginUserData){
+    return async function loginUserThunk(dispatch:any){
+        try {
+            const response = await api.post("/login",data)
+            if(response.status === 200){
+                setUser(response.data.data)
+                setStatus(Status.Success)
+            }else{
+                setStatus(Status.Error)
+            }
+        } catch (error) {
+            console.log(error)
+            setStatus(Status.Error)
         }
     }
 }
