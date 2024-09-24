@@ -7,11 +7,12 @@ export enum Role{
 }
 
 export interface UserData{
-    email : string, 
-    username : string, 
-    phoneNumber : string, 
+    email : string,  
     role : Role, 
-    password : string
+    password : string, 
+    firstName : string, 
+    lastName : string, 
+    address : string
 }
 
 export interface InititalState{

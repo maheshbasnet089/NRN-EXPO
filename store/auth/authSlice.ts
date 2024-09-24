@@ -29,7 +29,7 @@ const authSlice = createSlice({
 export const {setUser,setStatus} = authSlice.actions
 export default authSlice.reducer
 
-function registerUser(data:UserData){
+export function registerUser(data:UserData){
     return async function registerUserThunk(dispatch:any){
         try {
             const response = await api.post("/register",data)
@@ -46,7 +46,7 @@ function registerUser(data:UserData){
     }
 }
 
-function loginUser(data:LoginUserData){
+export function loginUser(data:LoginUserData){
     return async function loginUserThunk(dispatch:any){
         try {
             const response = await api.post("/login",data)

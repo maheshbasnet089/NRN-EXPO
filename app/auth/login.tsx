@@ -1,6 +1,30 @@
 
+import { loginUser } from '@/store/auth/authSlice'
+import { useAppDispatch } from '@/store/auth/hooks'
+import { useState } from 'react'
 import {ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native'
+
+
 function Login(){
+  const dispatch = useAppDispatch()
+  const [data,setData] = useState<{
+    email : string, 
+    password : string
+  }>({
+    email : "", 
+    password : ""
+  })
+
+  const handleChange = (name:string,value:string)=>{
+      setData({
+        ...data, 
+        [name] : value
+      })
+  }
+
+  const handleSubmit = ()=>{
+    dispatch(loginUser(data))
+  }
     return ( 
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
       <View className="bg-white-300 h-full w-full flex justify-center items-center">
@@ -17,6 +41,7 @@ function Login(){
                 placeholder='Email'
                 placeholderTextColor={'gray'}
                 keyboardType='email-address'
+                onChangeText={(text)=>handleChange('email',text)}
               />
             </View>
             <View className="bg-gray-200 p-3 rounded-2xl w-full">
@@ -24,10 +49,11 @@ function Login(){
                 placeholder='Password'
                 placeholderTextColor={'gray'}
                 secureTextEntry
+                onChangeText={(text)=>handleChange('password',text)}
               />
             </View>
             <View className="w-full">
-              <TouchableOpacity className="w-full bg-green-600 p-3 rounded-2xl mb-3">
+              <TouchableOpacity className="w-full bg-green-600 p-3 rounded-2xl mb-3" onPress={handleSubmit} >
                 <Text className="text-xl font-bold text-white text-center">Login</Text>
               </TouchableOpacity>
             </View>

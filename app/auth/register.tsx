@@ -1,6 +1,29 @@
+import { registerUser } from '@/store/auth/authSlice'
+import { useAppDispatch } from '@/store/auth/hooks'
+import { Role, UserData } from '@/store/auth/type'
+import { useState } from 'react'
 import {ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native'
+import { useDispatch } from 'react-redux'
 
 function Register(){
+  const dispatch = useAppDispatch()
+  const [data,setData] = useState<UserData>({
+    firstName : "", 
+    lastName : "", 
+    address : "", 
+    email : "", 
+    password : "", 
+    role : Role.Customer
+  })
+  const handleChange = (name:string,value:string)=>{
+    setData({
+      ...data,
+      [name] : value
+    })
+  }
+  const handleSubmit = ()=>{
+    dispatch(registerUser(data))
+  }
     return ( 
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
         <View className="bg-white-300 h-full w-full flex justify-center items-center">
@@ -16,7 +39,7 @@ function Register(){
                 <TextInput
                   placeholder='First Name'
                   placeholderTextColor={'gray'}
-
+                onChangeText={(text)=>handleChange('firstName', text)}
     
                 />
               </View>
@@ -24,8 +47,7 @@ function Register(){
                 <TextInput
                   placeholder='Last Name'
                   placeholderTextColor={'gray'}
- 
-    
+    onChangeText={(text)=>handleChange('lastName', text)}
            
                 />
               </View>
@@ -33,7 +55,7 @@ function Register(){
                 <TextInput
                   placeholder='Email'
                   placeholderTextColor={'gray'}
-
+                  onChangeText={(text)=>handleChange('email', text)}
     
                 />
               </View>
@@ -41,7 +63,7 @@ function Register(){
                 <TextInput
                   placeholder='Address'
                   placeholderTextColor={'gray'}
-   
+                  onChangeText={(text)=>handleChange('address', text)}
     
                 />
               </View>
@@ -50,7 +72,7 @@ function Register(){
                   placeholder='Password'
                   placeholderTextColor={'gray'}
                   secureTextEntry
-                  
+                  onChangeText={(text)=>handleChange('password', text)}
     
                 />
               </View>
@@ -73,7 +95,7 @@ function Register(){
               </View>
               <View className="w-full">
                 <TouchableOpacity className="w-full bg-green-600 p-3 rounded-2xl mb-3" 
-
+                  onPress={handleSubmit}
                 >
                   <Text className="text-xl font-bold text-white text-center">Create Account</Text>
                 </TouchableOpacity>
