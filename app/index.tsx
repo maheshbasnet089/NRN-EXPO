@@ -10,7 +10,6 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Text className="text-red-400 bg-red-300">Bye World.</Text>
       <Link href={
         {
           pathname :"/auth/register", 
@@ -23,6 +22,12 @@ export default function Index() {
           
         }
       }>Go to Login</Link>
+        <Link href={
+        {
+          pathname :"/product/add", 
+          
+        }
+      }>Add Product</Link>
     </View>
   );
 }

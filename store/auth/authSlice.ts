@@ -22,20 +22,26 @@ const authSlice = createSlice({
         }, 
         setStatus(state:InititalState,action:PayloadAction<Status>){
             state.status = action.payload
+        }, 
+        setToken(state:InititalState,action:PayloadAction<string>){
+            state.token = action.payload
         }
     }
 })
 
-export const {setUser,setStatus} = authSlice.actions
+export const {setUser,setStatus,setToken} = authSlice.actions
 export default authSlice.reducer
 
 export function registerUser(data:UserData){
     return async function registerUserThunk(dispatch:any){
         try {
             const response = await api.post("/register",data)
+            console.log(response.status)
             if(response.status === 200){
                 setUser(response.data.data)
                 setStatus(Status.Success)
+                return Status.Success
+              
             }else{
                 setStatus(Status.Error)
             }
@@ -53,6 +59,8 @@ export function loginUser(data:LoginUserData){
             if(response.status === 200){
                 setUser(response.data.data)
                 setStatus(Status.Success)
+                setToken(response.data.token)
+                return Status.Success
             }else{
                 setStatus(Status.Error)
             }

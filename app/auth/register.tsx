@@ -1,29 +1,50 @@
 import { registerUser } from '@/store/auth/authSlice'
-import { useAppDispatch } from '@/store/auth/hooks'
+import { useAppDispatch, useAppSelector } from '@/store/auth/hooks'
 import { Role, UserData } from '@/store/auth/type'
-import { useState } from 'react'
-import {ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native'
-import { useDispatch } from 'react-redux'
+import { Status } from '@/store/type.global'
+import { Link } from 'expo-router'
+import { useEffect, useState } from 'react'
+import {Alert, ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native'
+import { useDispatch, useSelector } from 'react-redux'
 
 function Register(){
   const dispatch = useAppDispatch()
+
+  const {status} = useAppSelector((state)=>state.auth)
   const [data,setData] = useState<UserData>({
     firstName : "", 
     lastName : "", 
     address : "", 
     email : "", 
-    password : "", 
-    role : Role.Customer
+    password : ""
   })
+  const [role,setRole] = useState<Role>(Role.Consumer)
+  console.log(role)
   const handleChange = (name:string,value:string)=>{
     setData({
       ...data,
       [name] : value
     })
   }
-  const handleSubmit = ()=>{
-    dispatch(registerUser(data))
+  const handleSubmit = async ()=>{
+    const dataWithRole = {
+      ...data, 
+      role 
+    }
+   const statuss  =  await dispatch(registerUser(dataWithRole))
+   if(statuss === Status.Success){
+    Alert.alert("User registered !!","The user was registered successfully",[
+      {
+        text : "Ok", 
+        onPress : ()=>{
+          console.log("Logged IN go")
+        }
+      }
+    ])
   }
+   
+  }
+
     return ( 
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
         <View className="bg-white-300 h-full w-full flex justify-center items-center">
@@ -80,14 +101,14 @@ function Register(){
                 <Text className="font-semibold">Choose your role</Text>
                 <View className="flex flex-row space-x-4">
                   <TouchableOpacity
-                    className={`p-2 rounded-md  bg-gray-200`}
-    
+                    className={`p-2 rounded-md ${role === Role.Seller ? 'bg-green-400' : 'bg-white'}`}
+                    onPress={()=>setRole(Role.Seller)}
                   >
                     <Text className="font-semibold">Seller</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    className={`p-2 rounded-md'bg-gray-200`}
-               
+                    className={`p-2 rounded-md ${role === Role.Consumer ? 'bg-green-400' : 'bg-white'}`}
+                    onPress={()=>setRole(Role.Consumer)}
                   >
                     <Text className="font-semibold">Consumer</Text>
                   </TouchableOpacity>
@@ -102,9 +123,16 @@ function Register(){
               </View>
               <View className="flex-row justify-center">
                 <Text>Already have an account?</Text>
-                <TouchableOpacity>
-                  <Text  className="text-green-600 font-semibold"> Sign In</Text>
-                </TouchableOpacity>
+                <Link href={
+        {
+          pathname :"/auth/login", 
+          
+        }
+      }>
+       
+                <Text className="text-green-600 font-semibold"> Sign In</Text>
+              
+             </Link>
               </View>
             </View>
           </View>

@@ -1,11 +1,17 @@
 
 import { loginUser } from '@/store/auth/authSlice'
-import { useAppDispatch } from '@/store/auth/hooks'
+import { useAppDispatch, useAppSelector } from '@/store/auth/hooks'
+import { Status } from '@/store/type.global'
+import { useNavigation } from '@react-navigation/native'
+import { Link } from 'expo-router'
+import AsyncStorage from "@react-native-async-storage/async-storage"
+
 import { useState } from 'react'
-import {ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native'
+import {Alert, ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native'
 
 
 function Login(){
+  const {token} = useAppSelector((state)=>state.auth)
   const dispatch = useAppDispatch()
   const [data,setData] = useState<{
     email : string, 
@@ -22,8 +28,18 @@ function Login(){
       })
   }
 
-  const handleSubmit = ()=>{
-    dispatch(loginUser(data))
+  const handleSubmit = async ()=>{
+    const status = await dispatch(loginUser(data))
+    if(status === Status.Success){
+      Alert.alert("User logged !!","The user was logged in successfully",[
+        {
+          text : "Ok", 
+          onPress : ()=>{
+           AsyncStorage.setItem("token",token as string)
+          }
+        }
+      ])
+    }
   }
     return ( 
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
@@ -59,9 +75,16 @@ function Login(){
             </View>
             <View className="flex-row justify-center">
               <Text>Don't have an account?</Text>
-              <TouchableOpacity>
+             <Link href={
+        {
+          pathname :"/auth/register", 
+          
+        }
+      }>
+       
                 <Text className="text-green-600 font-semibold"> Sign Up</Text>
-              </TouchableOpacity>
+              
+             </Link>
             </View>
           </View>
         </View>

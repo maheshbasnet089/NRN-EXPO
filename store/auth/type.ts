@@ -2,13 +2,12 @@ import { Status } from "../type.global"
 
 
 export enum Role{
-    Customer = 'customer',
+    Consumer = 'consumer',
     Seller = 'seller'
 }
 
 export interface UserData{
     email : string,  
-    role : Role, 
     password : string, 
     firstName : string, 
     lastName : string, 
